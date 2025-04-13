@@ -1,0 +1,35 @@
+package "illusory0x0/adapton"
+
+// Values
+fn clear_memo() -> Unit
+
+fn memo[A : Hash + Eq, B : Eq]((A) -> B) -> (A) -> Thunk[B]
+
+fn memo_rec[A : Hash + Eq, B : Eq](((A) -> Thunk[B], A) -> B) -> (A) -> Thunk[B]
+
+// Types and methods
+type Cell[A]
+impl Cell {
+  get[A : Eq](Self[A]) -> A
+  modify[A : Eq](Self[A], (A) -> A) -> Unit
+  new[A : Eq](A) -> Self[A]
+  set[A : Eq](Self[A], A) -> Unit
+}
+impl[A : Eq] Source for Cell[A]
+impl[A] Eq for Cell[A]
+impl[A] Hash for Cell[A]
+
+type Thunk[A]
+impl Thunk {
+  get[A : Eq](Self[A]) -> A
+  new[A : Eq](() -> A) -> Self[A]
+}
+impl[A : Eq] Source for Thunk[A]
+impl[A] Eq for Thunk[A]
+impl[A] Hash for Thunk[A]
+
+// Type aliases
+
+// Traits
+trait Source
+

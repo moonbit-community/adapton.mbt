@@ -1,0 +1,10 @@
+{
+  "name": "illusory0x0/adapton",
+  "version": "0.1.0",
+  "readme": "README.md",
+  "repository": "https://github.com/moonbit-community/adapton.mbt",
+  "license": "Apache-2.0",
+  "keywords": ["adapton", "incremental computing"],
+  "description": "Moonbit classic adapton implementation",
+  "source": "src"
+}
