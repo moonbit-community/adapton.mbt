@@ -1,11 +1,15 @@
 package "illusory0x0/adapton"
 
 // Values
+fn cell[A : Eq](A) -> Cell[A]
+
 fn clear_memo() -> Unit
 
 fn memo[A : Hash + Eq, B : Eq]((A) -> B) -> (A) -> Thunk[B]
 
 fn memo_rec[A : Hash + Eq, B : Eq](((A) -> Thunk[B], A) -> B) -> (A) -> Thunk[B]
+
+fn thunk[A : Eq](() -> A) -> Thunk[A]
 
 // Types and methods
 type Cell[A]

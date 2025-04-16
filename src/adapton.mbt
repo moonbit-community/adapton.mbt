@@ -174,6 +174,16 @@ pub fn Cell::new[A : Eq](value : A) -> Cell[A] {
   { _id: next_id(), _value: value, _incoming_edges: [] }
 }
 
+///| The same as `Thunk::new`
+pub fn thunk[A : Eq](thunk : () -> A) -> Thunk[A] {
+  Thunk::new(thunk)
+}
+
+///| The same as `Cell::new`
+pub fn cell[A : Eq](value : A) -> Cell[A] {
+  Cell::new(value)
+}
+
 ///|
 pub fn Cell::set[A : Eq](self : Cell[A], value : A) -> Unit {
   if self._value != value {
