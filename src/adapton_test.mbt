@@ -14,12 +14,14 @@ test "in degree > 1" {
     cnt += 1
     b0.get() + b1.get()
   })
+  inspect!(b1.get(), content="3")
   inspect!(c.get(), content="5")
   inspect!(cnt, content="3")
   a.set(20)
   inspect!(cnt, content="3")
   inspect!(c.get(), content="100")
   inspect!(cnt, content="6")
+  c.destroy()
 }
 
 ///|
@@ -47,6 +49,7 @@ test "propagate" {
   y.modify(fn { y => y + 1 })
   inspect!(w.get(), content="13")
   inspect!(cnt, content="5") // cnt: +2
+  w.destroy()
 }
 
 ///|
@@ -91,6 +94,7 @@ test "sum" {
   inspect!(s.get(), content="523778")
   assert_eq!(acc_sum(xs), s.get())
   inspect!(cnt, content="1043")
+  s.destroy()
 }
 
 ///|
@@ -141,4 +145,6 @@ test "spreadsheet" {
   p2.set(Plus(n3, p1)) // swaps operand cells
   inspect!(t2.get(), content="10")
   inspect!(cnt, content="4") // memo matches twice
+  t1.destroy()
+  t2.destroy()
 }

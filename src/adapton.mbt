@@ -22,7 +22,7 @@ struct Thunk[A] {
   mut _value : A?
   _incoming_edges : IncomingEdges
   mut _outgoing_edges : OutgoingEdges
-  _thunk : () -> A
+  mut _thunk : () -> A
   mut _flag : Flag
 }
 
@@ -63,6 +63,7 @@ impl Show for &Target with output(self, logger) {
 priv trait Target: Source {
   outgoing_edges(Self) -> OutgoingEdges
   update(Self) -> Bool
+  clear(Self) -> Unit
   set_flag(Self, Flag) -> Unit
   flag(Self) -> Flag
 }
@@ -106,6 +107,50 @@ fn &Target::propagate(self : Node) -> Bool {
       }
     }
   }
+}
+
+///|
+fn &Target::destroy(self : Node) -> Unit {
+  match self.flag() {
+    Dirty => ()
+    Clean => {
+      self.set_flag(Dirty)
+      match self.outgoing_edges() {
+        [] => ()
+        [..] as xs =>
+          for x in xs {
+            &Target::destroy(x)
+          }
+      }
+      self.clear()
+    }
+  }
+}
+
+///| TODO
+/// Clean or Dirty is alive.
+///  Destroyed was destroyed can't invoke get
+/// 
+fn &Target::set_all_flags_clean(self : Node) -> Unit {
+  match self.flag() {
+    Clean => ()
+    Dirty => {
+      self.set_flag(Clean)
+      match self.outgoing_edges() {
+        [] => ()
+        [..] as xs =>
+          for x in xs {
+            &Target::set_all_flags_clean(x)
+          }
+      }
+    }
+  }
+}
+
+///| Destroy dependency graph
+pub fn Thunk::destroy[A : Eq](self : Thunk[A]) -> Unit {
+  &Target::set_all_flags_clean(self)
+  &Target::destroy(self)
 }
 
 ///| do not short-circuit.
@@ -283,6 +328,13 @@ pub fn memo_rec[A : Hash + Eq, B : Eq](
 ///|
 impl[A : Eq] Target for Thunk[A] with outgoing_edges(self) {
   self._outgoing_edges
+}
+
+///|
+impl[A : Eq] Target for Thunk[A] with clear(self) {
+  self._incoming_edges.clear()
+  self._outgoing_edges.clear()
+  self._thunk = panic
 }
 
 ///|
