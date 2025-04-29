@@ -25,6 +25,7 @@ impl[A] Hash for Cell[A]
 
 type Thunk[A]
 impl Thunk {
+  destroy[A : Eq](Self[A]) -> Unit
   get[A : Eq](Self[A]) -> A
   new[A : Eq](() -> A) -> Self[A]
 }
