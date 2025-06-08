@@ -1,34 +1,29 @@
 package "illusory0x0/adapton"
 
 // Values
-fn cell[A : Eq](A) -> Cell[A]
+fn[A : Eq] cell(A) -> Cell[A]
 
 fn clear_memo() -> Unit
 
-fn memo[A : Hash + Eq, B : Eq]((A) -> B) -> (A) -> Thunk[B]
+fn[A : Hash + Eq, B : Eq] memo((A) -> B) -> (A) -> Thunk[B]
 
-fn memo_rec[A : Hash + Eq, B : Eq](((A) -> Thunk[B], A) -> B) -> (A) -> Thunk[B]
+fn[A : Hash + Eq, B : Eq] memo_rec(((A) -> Thunk[B], A) -> B) -> (A) -> Thunk[B]
 
-fn thunk[A : Eq](() -> A) -> Thunk[A]
+fn[A : Eq] thunk(() -> A) -> Thunk[A]
 
 // Types and methods
 type Cell[A]
-impl Cell {
-  get[A : Eq](Self[A]) -> A
-  modify[A : Eq](Self[A], (A) -> A) -> Unit
-  new[A : Eq](A) -> Self[A]
-  set[A : Eq](Self[A], A) -> Unit
-}
+fn[A : Eq] Cell::get(Self[A]) -> A
+fn[A : Eq] Cell::modify(Self[A], (A) -> A) -> Unit
+fn[A : Eq] Cell::new(A) -> Self[A]
+fn[A : Eq] Cell::set(Self[A], A) -> Unit
 impl[A : Eq] Source for Cell[A]
 impl[A] Eq for Cell[A]
 impl[A] Hash for Cell[A]
 
 type Thunk[A]
-impl Thunk {
-  destroy[A : Eq](Self[A]) -> Unit
-  get[A : Eq](Self[A]) -> A
-  new[A : Eq](() -> A) -> Self[A]
-}
+fn[A : Eq] Thunk::get(Self[A]) -> A
+fn[A : Eq] Thunk::new(() -> A) -> Self[A]
 impl[A : Eq] Source for Thunk[A]
 impl[A] Eq for Thunk[A]
 impl[A] Hash for Thunk[A]

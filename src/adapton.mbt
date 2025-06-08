@@ -1,7 +1,7 @@
 ///| TODO
 /// https://github.com/WebAssembly/gc/blob/main/proposals/gc/Post-MVP.md#weak-references
 /// wasm and wasm-gc can't support weak ref now.
-typealias WeakArray[A] = Array[A]
+typealias Array as WeakArray
 
 ///|
 typealias IncomingEdges = WeakArray[Node]
@@ -27,12 +27,12 @@ struct Thunk[A] {
 }
 
 ///|
-fn Thunk::debug_string[A](self : Thunk[A]) -> String {
+fn[A] Thunk::debug_string(self : Thunk[A]) -> String {
   "{ id : \{self._id}, out: \{self._outgoing_edges}, in: \{self._incoming_edges}}"
 }
 
 ///|
-fn Cell::debug_string[A](self : Cell[A]) -> String {
+fn[A] Cell::debug_string(self : Cell[A]) -> String {
   "{ id : \{self._id}, in: \{self._incoming_edges}}"
 }
 
@@ -108,7 +108,6 @@ fn &Target::propagate(self : Node) -> Bool {
   }
 }
 
-
 ///| TODO
 /// Clean or Dirty is alive.
 ///  Destroyed was destroyed can't invoke get
@@ -131,7 +130,7 @@ fn &Target::set_all_flags_clean(self : Node) -> Unit {
 
 ///| do not short-circuit.
 /// f isn't pure function. in other words, f has side effect.
-fn any[A](xs : Array[A], f : (A) -> Bool) -> Bool {
+fn[A] any(xs : Array[A], f : (A) -> Bool) -> Bool {
   let mut res = false
   for x in xs {
     res = res || f(x)
@@ -179,7 +178,7 @@ fn next_id() -> Int {
 }
 
 ///|
-pub fn Thunk::new[A : Eq](thunk : () -> A) -> Thunk[A] {
+pub fn[A : Eq] Thunk::new(thunk : () -> A) -> Thunk[A] {
   {
     _id: next_id(),
     _value: None,
@@ -191,22 +190,22 @@ pub fn Thunk::new[A : Eq](thunk : () -> A) -> Thunk[A] {
 }
 
 ///|
-pub fn Cell::new[A : Eq](value : A) -> Cell[A] {
+pub fn[A : Eq] Cell::new(value : A) -> Cell[A] {
   { _id: next_id(), _value: value, _incoming_edges: [] }
 }
 
 ///| The same as `Thunk::new`
-pub fn thunk[A : Eq](thunk : () -> A) -> Thunk[A] {
+pub fn[A : Eq] thunk(thunk : () -> A) -> Thunk[A] {
   Thunk::new(thunk)
 }
 
 ///| The same as `Cell::new`
-pub fn cell[A : Eq](value : A) -> Cell[A] {
+pub fn[A : Eq] cell(value : A) -> Cell[A] {
   Cell::new(value)
 }
 
 ///|
-pub fn Cell::set[A : Eq](self : Cell[A], value : A) -> Unit {
+pub fn[A : Eq] Cell::set(self : Cell[A], value : A) -> Unit {
   if self._value != value {
     self._value = value
     for dependent in self.incoming_edges() {
@@ -216,7 +215,7 @@ pub fn Cell::set[A : Eq](self : Cell[A], value : A) -> Unit {
 }
 
 ///|
-pub fn Cell::modify[A : Eq](self : Cell[A], f : (A) -> A) -> Unit {
+pub fn[A : Eq] Cell::modify(self : Cell[A], f : (A) -> A) -> Unit {
   self.set(f(self.get()))
 }
 
@@ -224,7 +223,7 @@ pub fn Cell::modify[A : Eq](self : Cell[A], f : (A) -> A) -> Unit {
 let target_stack : Array[&Target] = []
 
 ///|
-pub fn Thunk::get[A : Eq](self : Thunk[A]) -> A {
+pub fn[A : Eq] Thunk::get(self : Thunk[A]) -> A {
   if not(target_stack.is_empty()) {
     let target = target_stack.last().unwrap()
     self._incoming_edges.push(target)
@@ -240,7 +239,7 @@ pub fn Thunk::get[A : Eq](self : Thunk[A]) -> A {
 }
 
 ///|
-pub fn Cell::get[A : Eq](self : Cell[A]) -> A {
+pub fn[A : Eq] Cell::get(self : Cell[A]) -> A {
   if not(target_stack.is_empty()) {
     let target = target_stack.last().unwrap()
     self._incoming_edges.push(target)
@@ -266,7 +265,7 @@ pub fn clear_memo() -> Unit {
 }
 
 ///|
-pub fn memo[A : Hash + Eq, B : Eq](f : (A) -> B) -> (A) -> Thunk[B] {
+pub fn[A : Hash + Eq, B : Eq] memo(f : (A) -> B) -> (A) -> Thunk[B] {
   let h = {}
   memo_tables.push(fn() { h.clear() })
   fn(x) {
@@ -282,7 +281,7 @@ pub fn memo[A : Hash + Eq, B : Eq](f : (A) -> B) -> (A) -> Thunk[B] {
 }
 
 ///|
-pub fn memo_rec[A : Hash + Eq, B : Eq](
+pub fn[A : Hash + Eq, B : Eq] memo_rec(
   f : ((A) -> Thunk[B], A) -> B
 ) -> (A) -> Thunk[B] {
   let h : Map[A, Thunk[B]] = {}
@@ -305,7 +304,6 @@ pub fn memo_rec[A : Hash + Eq, B : Eq](
 impl[A : Eq] Target for Thunk[A] with outgoing_edges(self) {
   self._outgoing_edges
 }
-
 
 ///|
 /// if actually update then return true else false
