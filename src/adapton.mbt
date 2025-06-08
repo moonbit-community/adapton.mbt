@@ -248,10 +248,7 @@ pub fn[A : Eq] Cell::get(self : Cell[A]) -> A {
 }
 
 ///|
-typealias Clear = () -> Unit
-
-///|
-typealias MemoTables = Array[Clear]
+typealias MemoTables = Array[() -> Unit]
 
 ///|
 let memo_tables : MemoTables = []
@@ -269,7 +266,7 @@ pub fn[A : Hash + Eq, B : Eq] memo(f : (A) -> B) -> (A) -> Thunk[B] {
   let h = {}
   memo_tables.push(fn() { h.clear() })
   fn(x) {
-    match h[x] {
+    match h.get(x) {
       None => {
         let r = Thunk::new(fn() { f(x) })
         h[x] = r
@@ -287,7 +284,7 @@ pub fn[A : Hash + Eq, B : Eq] memo_rec(
   let h : Map[A, Thunk[B]] = {}
   memo_tables.push(fn() { h.clear() })
   fn g(x : A) -> Thunk[B] {
-    match h[x] {
+    match h.get(x) {
       None => {
         let r = Thunk::new(fn() { f(g, x) })
         h[x] = r
