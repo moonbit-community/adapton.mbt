@@ -4,10 +4,10 @@
 typealias Array as WeakArray
 
 ///|
-typealias IncomingEdges = WeakArray[Node]
+typealias WeakArray[Node] as IncomingEdges
 
 ///|
-typealias OutgoingEdges = Array[Node]
+typealias Array[Node] as OutgoingEdges
 
 ///|
 struct Cell[A] {
@@ -68,11 +68,11 @@ priv trait Target: Source {
 }
 
 ///|
-typealias Node = &Target
+typealias &Target as Node
 
 ///|
-/// invairent: 
-/// If a node is clean, 
+/// invairent:
+/// If a node is clean,
 /// then all transitively reachable nodes from the incoming edge of this node are clean
 fn &Target::dirty(self : Node) -> Unit {
   match self.flag() {
@@ -111,7 +111,7 @@ fn &Target::propagate(self : Node) -> Bool {
 ///| TODO
 /// Clean or Dirty is alive.
 ///  Destroyed was destroyed can't invoke get
-/// 
+///
 fn &Target::set_all_flags_clean(self : Node) -> Unit {
   match self.flag() {
     Clean => ()
@@ -173,7 +173,7 @@ let node_counter : Ref[Int] = Ref::new(0)
 
 ///|
 fn next_id() -> Int {
-  node_counter.update(fn { x => x + 1 })
+  node_counter.update(x => x + 1)
   node_counter.val
 }
 
@@ -248,7 +248,7 @@ pub fn[A : Eq] Cell::get(self : Cell[A]) -> A {
 }
 
 ///|
-typealias MemoTables = Array[() -> Unit]
+typealias Array[() -> Unit] as MemoTables
 
 ///|
 let memo_tables : MemoTables = []
