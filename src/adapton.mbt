@@ -279,7 +279,7 @@ pub fn[A : Hash + Eq, B : Eq] memo(f : (A) -> B) -> (A) -> Thunk[B] {
 
 ///|
 pub fn[A : Hash + Eq, B : Eq] memo_rec(
-  f : ((A) -> Thunk[B], A) -> B
+  f : ((A) -> Thunk[B], A) -> B,
 ) -> (A) -> Thunk[B] {
   let h : Map[A, Thunk[B]] = {}
   memo_tables.push(fn() { h.clear() })
