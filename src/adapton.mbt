@@ -144,7 +144,7 @@ pub impl[A : Eq] Source for Thunk[A] with id(self) {
 }
 
 ///|
-pub impl[A : Eq] Source for Cell[A] with id(self) {
+pub impl[A] Source for Cell[A] with id(self) {
   self._id
 }
 
@@ -178,7 +178,7 @@ fn next_id() -> Int {
 }
 
 ///|
-pub fn[A : Eq] Thunk::new(thunk : () -> A) -> Thunk[A] {
+pub fn[A] Thunk::new(thunk : () -> A) -> Thunk[A] {
   {
     _id: next_id(),
     _value: None,
@@ -190,17 +190,17 @@ pub fn[A : Eq] Thunk::new(thunk : () -> A) -> Thunk[A] {
 }
 
 ///|
-pub fn[A : Eq] Cell::new(value : A) -> Cell[A] {
+pub fn[A] Cell::new(value : A) -> Cell[A] {
   { _id: next_id(), _value: value, _incoming_edges: [] }
 }
 
 ///| The same as `Thunk::new`
-pub fn[A : Eq] thunk(thunk : () -> A) -> Thunk[A] {
+pub fn[A] thunk(thunk : () -> A) -> Thunk[A] {
   Thunk::new(thunk)
 }
 
 ///| The same as `Cell::new`
-pub fn[A : Eq] cell(value : A) -> Cell[A] {
+pub fn[A] cell(value : A) -> Cell[A] {
   Cell::new(value)
 }
 
@@ -239,7 +239,7 @@ pub fn[A : Eq] Thunk::get(self : Thunk[A]) -> A {
 }
 
 ///|
-pub fn[A : Eq] Cell::get(self : Cell[A]) -> A {
+pub fn[A] Cell::get(self : Cell[A]) -> A {
   if not(target_stack.is_empty()) {
     let target = target_stack.last().unwrap()
     self._incoming_edges.push(target)
@@ -262,7 +262,7 @@ pub fn clear_memo() -> Unit {
 }
 
 ///|
-pub fn[A : Hash + Eq, B : Eq] memo(f : (A) -> B) -> (A) -> Thunk[B] {
+pub fn[A : Hash + Eq, B] memo(f : (A) -> B) -> (A) -> Thunk[B] {
   let h = {}
   memo_tables.push(fn() { h.clear() })
   fn(x) {
@@ -278,7 +278,7 @@ pub fn[A : Hash + Eq, B : Eq] memo(f : (A) -> B) -> (A) -> Thunk[B] {
 }
 
 ///|
-pub fn[A : Hash + Eq, B : Eq] memo_rec(
+pub fn[A : Hash + Eq, B] memo_rec(
   f : ((A) -> Thunk[B], A) -> B,
 ) -> (A) -> Thunk[B] {
   let h : Map[A, Thunk[B]] = {}
@@ -323,7 +323,7 @@ impl[A : Eq] Target for Thunk[A] with set_flag(self, flag) {
 }
 
 ///|
-pub impl[A : Eq] Source for Cell[A] with to_node(self) {
+pub impl[A] Source for Cell[A] with to_node(self) {
   None
 }
 
@@ -333,7 +333,7 @@ pub impl[A : Eq] Source for Thunk[A] with to_node(self) {
 }
 
 ///|
-pub impl[A : Eq] Source for Cell[A] with incoming_edges(self) {
+pub impl[A] Source for Cell[A] with incoming_edges(self) {
   self._incoming_edges
 }
 
