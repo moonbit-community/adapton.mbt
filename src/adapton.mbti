@@ -1,3 +1,4 @@
+// Generated using `moon info`, DON'T EDIT IT
 package "illusory0x0/adapton"
 
 // Values
@@ -10,6 +11,8 @@ fn[A : Hash + Eq, B : Eq] memo((A) -> B) -> (A) -> Thunk[B]
 fn[A : Hash + Eq, B : Eq] memo_rec(((A) -> Thunk[B], A) -> B) -> (A) -> Thunk[B]
 
 fn[A : Eq] thunk(() -> A) -> Thunk[A]
+
+// Errors
 
 // Types and methods
 type Cell[A]
