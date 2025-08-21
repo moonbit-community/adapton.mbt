@@ -1,29 +1,32 @@
+// Generated using `moon info`, DON'T EDIT IT
 package "illusory0x0/adapton"
 
 // Values
-fn[A : Eq] cell(A) -> Cell[A]
+fn[A] cell(A) -> Cell[A]
 
 fn clear_memo() -> Unit
 
-fn[A : Hash + Eq, B : Eq] memo((A) -> B) -> (A) -> Thunk[B]
+fn[A : Hash + Eq, B] memo((A) -> B) -> (A) -> Thunk[B]
 
-fn[A : Hash + Eq, B : Eq] memo_rec(((A) -> Thunk[B], A) -> B) -> (A) -> Thunk[B]
+fn[A : Hash + Eq, B] memo_rec(((A) -> Thunk[B], A) -> B) -> (A) -> Thunk[B]
 
-fn[A : Eq] thunk(() -> A) -> Thunk[A]
+fn[A] thunk(() -> A) -> Thunk[A]
+
+// Errors
 
 // Types and methods
 type Cell[A]
-fn[A : Eq] Cell::get(Self[A]) -> A
+fn[A] Cell::get(Self[A]) -> A
 fn[A : Eq] Cell::modify(Self[A], (A) -> A) -> Unit
-fn[A : Eq] Cell::new(A) -> Self[A]
+fn[A] Cell::new(A) -> Self[A]
 fn[A : Eq] Cell::set(Self[A], A) -> Unit
-impl[A : Eq] Source for Cell[A]
+impl[A] Source for Cell[A]
 impl[A] Eq for Cell[A]
 impl[A] Hash for Cell[A]
 
 type Thunk[A]
 fn[A : Eq] Thunk::get(Self[A]) -> A
-fn[A : Eq] Thunk::new(() -> A) -> Self[A]
+fn[A] Thunk::new(() -> A) -> Self[A]
 impl[A : Eq] Source for Thunk[A]
 impl[A] Eq for Thunk[A]
 impl[A] Hash for Thunk[A]
