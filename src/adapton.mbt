@@ -100,6 +100,8 @@ fn &Target::propagate(self : Node) -> Bool {
         [] => self.update()
         [..] as xs =>
           if any(xs, &Target::propagate) {
+            self.outgoing_edges().clear()
+            self.incoming_edges().clear()
             self.update()
           } else {
             false

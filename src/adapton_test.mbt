@@ -143,3 +143,19 @@ test "spreadsheet" {
   inspect(t2.get(), content="10")
   inspect(cnt, content="4") // memo matches twice
 }
+
+test "conditional dependency" {
+  let s1 = Cell::new(true)
+  let s2 = Cell::new(-20)
+  let s3 = Cell::new(20)
+  let t = Thunk::new(() => if s1.get() { s2.get() } else { s3.get() })
+  inspect(t.get(), content="-20")
+  s1.set(false)
+  inspect(t.get(), content="20")
+  s1.set(true)
+  s2.set(-40)
+  inspect(t.get(), content="-40")
+  s1.set(false)
+  s3.set(40)
+  inspect(t.get(), content="40")
+}
