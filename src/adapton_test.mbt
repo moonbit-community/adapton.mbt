@@ -144,6 +144,7 @@ test "spreadsheet" {
   inspect(cnt, content="4") // memo matches twice
 }
 
+///|
 test "conditional dependency" {
   let s1 = Cell::new(true)
   let s2 = Cell::new(-20)
