@@ -37,7 +37,6 @@ priv enum Flag {
 trait Source {
   id(Self) -> Int
   incoming_edges(Self) -> IncomingEdges
-  to_node(Self) -> Node?
 }
 
 ///|
@@ -294,16 +293,6 @@ impl[A : Eq] Target for Thunk[A] with flag(self) {
 ///|
 impl[A : Eq] Target for Thunk[A] with set_flag(self, flag) {
   self._flag = flag
-}
-
-///|
-pub impl[A] Source for Cell[A] with to_node(self) {
-  None
-}
-
-///|
-pub impl[A : Eq] Source for Thunk[A] with to_node(self) {
-  Some(self)
 }
 
 ///|
