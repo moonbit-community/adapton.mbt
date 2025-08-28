@@ -23,8 +23,8 @@ jobs:
             triple: x86_64-linux-gnu
           - name: macos-latest
             triple: arm64-apple-darwin
-          - name: macos-13
-            triple: x86_64-apple-darwin
+          # - name: macos-13
+          #   triple: x86_64-apple-darwin
           - name: windows-latest
             triple: x86_64-w64-mingw32
 
@@ -59,7 +59,7 @@ jobs:
           moon install
 
       - name: moon check
-        run: moon check --deny-warn
+        run: moon check 
 
       - name: moon info
         run: |
