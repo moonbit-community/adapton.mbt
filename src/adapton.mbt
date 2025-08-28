@@ -40,16 +40,6 @@ trait Source {
 }
 
 ///|
-impl Show for &Source with output(self, logger) {
-  logger.write_object(self.id())
-}
-
-///|
-impl Show for &Target with output(self, logger) {
-  logger.write_object(self.id())
-}
-
-///|
 priv trait Target: Source {
   outgoing_edges(Self) -> OutgoingEdges
   update(Self) -> Bool
