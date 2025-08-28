@@ -110,27 +110,6 @@ fn &Target::propagate(self : Node) -> Bool {
 }
 
 ///|
-/// TODO
-/// Clean or Dirty is alive.
-///  Destroyed was destroyed can't invoke get
-///
-fn &Target::set_all_flags_clean(self : Node) -> Unit {
-  match self.flag() {
-    Clean => ()
-    Dirty => {
-      self.set_flag(Clean)
-      match self.outgoing_edges() {
-        [] => ()
-        [..] as xs =>
-          for x in xs {
-            &Target::set_all_flags_clean(x)
-          }
-      }
-    }
-  }
-}
-
-///|
 /// do not short-circuit.
 /// f isn't pure function. in other words, f has side effect.
 fn[A] any(xs : Array[A], f : (A) -> Bool) -> Bool {
@@ -229,24 +208,20 @@ let target_stack : Array[&Target] = []
 
 ///|
 pub fn[A : Eq] Thunk::get(self : Thunk[A]) -> A {
-  if not(target_stack.is_empty()) {
-    let target = target_stack.last().unwrap()
+  if target_stack.last() is Some(target) {
     self._incoming_edges.push(target)
     target.outgoing_edges().push(self)
   }
-  if self._value.is_empty() {
-    target_stack.push(self)
-    self.update() |> ignore
-    target_stack.unsafe_pop() |> ignore
+  match self._value {
+    None => self.update() |> ignore
+    Some(_) => &Target::propagate(self) |> ignore
   }
-  &Target::propagate(self) |> ignore
   self._value.unwrap()
 }
 
 ///|
 pub fn[A] Cell::get(self : Cell[A]) -> A {
-  if not(target_stack.is_empty()) {
-    let target = target_stack.last().unwrap()
+  if target_stack.last() is Some(target) {
     self._incoming_edges.push(target)
   }
   self._value
@@ -310,10 +285,12 @@ impl[A : Eq] Target for Thunk[A] with outgoing_edges(self) {
 ///|
 /// if actually update then return true else false
 impl[A : Eq] Target for Thunk[A] with update(self) {
+  target_stack.push(self)
   self._flag = Clean
   let old = self._value
   let new = Some((self._thunk)())
   self._value = new
+  target_stack.unsafe_pop() |> ignore
   old != new
 }
 
