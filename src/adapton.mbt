@@ -12,19 +12,19 @@ typealias Array[Node] as OutgoingEdges
 
 ///|
 struct Cell[A] {
-  _id : Int
-  mut _value : A
-  _incoming_edges : IncomingEdges
+  id : Int
+  mut value : A
+  incoming_edges : IncomingEdges
 }
 
 ///|
 struct Thunk[A] {
-  _id : Int
-  mut _value : A?
-  _incoming_edges : IncomingEdges
-  _outgoing_edges : OutgoingEdges
-  _thunk : () -> A
-  mut _flag : Flag
+  id : Int
+  mut value : A?
+  incoming_edges : IncomingEdges
+  outgoing_edges : OutgoingEdges
+  thunk : () -> A
+  mut flag : Flag
 }
 
 ///|
@@ -113,32 +113,32 @@ fn[A] any(xs : Array[A], f : (A) -> Bool) -> Bool {
 
 ///|
 pub impl[A] Source for Thunk[A] with id(self) {
-  self._id
+  self.id
 }
 
 ///|
 pub impl[A] Source for Cell[A] with id(self) {
-  self._id
+  self.id
 }
 
 ///|
 pub impl[A] Eq for Thunk[A] with op_equal(self, other) {
-  self._id == other._id
+  self.id == other.id
 }
 
 ///|
 pub impl[A] Eq for Cell[A] with op_equal(self, other) {
-  self._id == other._id
+  self.id == other.id
 }
 
 ///|
 pub impl[A] Hash for Thunk[A] with hash_combine(self, hasher) {
-  self._id.hash_combine(hasher)
+  self.id.hash_combine(hasher)
 }
 
 ///|
 pub impl[A] Hash for Cell[A] with hash_combine(self, hasher) {
-  self._id.hash_combine(hasher)
+  self.id.hash_combine(hasher)
 }
 
 ///|
@@ -153,18 +153,18 @@ fn next_id() -> Int {
 ///|
 pub fn[A] Thunk::new(thunk : () -> A) -> Thunk[A] {
   {
-    _id: next_id(),
-    _value: None,
-    _thunk: thunk,
-    _incoming_edges: [],
-    _outgoing_edges: [],
-    _flag: Clean,
+    id: next_id(),
+    value: None,
+    thunk,
+    incoming_edges: [],
+    outgoing_edges: [],
+    flag: Clean,
   }
 }
 
 ///|
 pub fn[A] Cell::new(value : A) -> Cell[A] {
-  { _id: next_id(), _value: value, _incoming_edges: [] }
+  { id: next_id(), value, incoming_edges: [] }
 }
 
 ///|
@@ -181,8 +181,8 @@ pub fn[A] cell(value : A) -> Cell[A] {
 
 ///|
 pub fn[A : Eq] Cell::set(self : Cell[A], value : A) -> Unit {
-  if self._value != value {
-    self._value = value
+  if self.value != value {
+    self.value = value
     for dependent in self.incoming_edges() {
       &Target::dirty(dependent)
     }
@@ -200,22 +200,22 @@ let target_stack : Array[&Target] = []
 ///|
 pub fn[A : Eq] Thunk::get(self : Thunk[A]) -> A {
   if target_stack.last() is Some(target) {
-    self._incoming_edges.push(target)
+    self.incoming_edges.push(target)
     target.outgoing_edges().push(self)
   }
-  match self._value {
+  match self.value {
     None => self.update() |> ignore
     Some(_) => &Target::propagate(self) |> ignore
   }
-  self._value.unwrap()
+  self.value.unwrap()
 }
 
 ///|
 pub fn[A] Cell::get(self : Cell[A]) -> A {
   if target_stack.last() is Some(target) {
-    self._incoming_edges.push(target)
+    self.incoming_edges.push(target)
   }
-  self._value
+  self.value
 }
 
 ///|
@@ -270,37 +270,37 @@ pub fn[A : Hash + Eq, B] memo_rec(
 
 ///|
 impl[A : Eq] Target for Thunk[A] with outgoing_edges(self) {
-  self._outgoing_edges
+  self.outgoing_edges
 }
 
 ///|
 /// if actually update then return true else false
 impl[A : Eq] Target for Thunk[A] with update(self) {
   target_stack.push(self)
-  self._flag = Clean
-  let old = self._value
-  let new = Some((self._thunk)())
-  self._value = new
+  self.flag = Clean
+  let old = self.value
+  let new = Some((self.thunk)())
+  self.value = new
   target_stack.unsafe_pop() |> ignore
   old != new
 }
 
 ///|
 impl[A : Eq] Target for Thunk[A] with flag(self) {
-  self._flag
+  self.flag
 }
 
 ///|
 impl[A : Eq] Target for Thunk[A] with set_flag(self, flag) {
-  self._flag = flag
+  self.flag = flag
 }
 
 ///|
 pub impl[A] Source for Cell[A] with incoming_edges(self) {
-  self._incoming_edges
+  self.incoming_edges
 }
 
 ///|
 pub impl[A] Source for Thunk[A] with incoming_edges(self) {
-  self._incoming_edges
+  self.incoming_edges
 }

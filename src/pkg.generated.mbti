@@ -27,7 +27,7 @@ impl[A] Hash for Cell[A]
 type Thunk[A]
 fn[A : Eq] Thunk::get(Self[A]) -> A
 fn[A] Thunk::new(() -> A) -> Self[A]
-impl[A : Eq] Source for Thunk[A]
+impl[A] Source for Thunk[A]
 impl[A] Eq for Thunk[A]
 impl[A] Hash for Thunk[A]
 
