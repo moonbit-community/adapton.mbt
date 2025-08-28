@@ -1,16 +1,16 @@
 ///|
 test "in degree > 1" {
   let mut cnt = 0
-  let a = Cell::new(1)
-  let b0 = Thunk::new(fn() {
+  let a = @adapton.Cell::new(1)
+  let b0 = @adapton.Thunk::new(fn() {
     cnt += 1
     a.get() * 2
   })
-  let b1 = Thunk::new(fn() {
+  let b1 = @adapton.Thunk::new(fn() {
     cnt += 1
     a.get() * 3
   })
-  let c = Thunk::new(fn() {
+  let c = @adapton.Thunk::new(fn() {
     cnt += 1
     b0.get() + b1.get()
   })
@@ -26,13 +26,13 @@ test "in degree > 1" {
 ///|
 test "propagate" {
   let mut cnt = 0
-  let x = Cell::new(2)
-  let y = Cell::new(3)
-  let z = Thunk::new(fn() {
+  let x = @adapton.Cell::new(2)
+  let y = @adapton.Cell::new(3)
+  let z = @adapton.Thunk::new(fn() {
     cnt += 1
     x.get() * y.get()
   })
-  let w = Thunk::new(fn() {
+  let w = @adapton.Thunk::new(fn() {
     cnt += 1
     z.get() + 1
   })
@@ -52,27 +52,27 @@ test "propagate" {
 
 ///|
 test "sum" {
-  let xs = Array::makei(1024, Cell::new)
+  let xs = Array::makei(1024, @adapton.Cell::new)
   let mut cnt = 0
   fn add(x, y) {
     cnt += 1
     x + y
   }
 
-  fn sum(xs : ArrayView[Cell[Int]]) -> Thunk[Int] {
+  fn sum(xs : ArrayView[@adapton.Cell[Int]]) -> @adapton.Thunk[Int] {
     match xs {
       [] => panic()
-      [x, y] => Thunk::new(fn() { add(x.get(), y.get()) })
+      [x, y] => @adapton.Thunk::new(fn() { add(x.get(), y.get()) })
       _ => {
         let m = xs.length() / 2
         let left = sum(xs[0:m])
         let right = sum(xs[m:]) // eval sum must outside the thunk
-        Thunk::new(fn() { add(left.get(), right.get()) })
+        @adapton.Thunk::new(fn() { add(left.get(), right.get()) })
       }
     }
   }
 
-  fn acc_sum(xs : Array[Cell[Int]]) {
+  fn acc_sum(xs : Array[@adapton.Cell[Int]]) {
     xs.fold(init=0, (acc, x) => x.get() + acc)
   }
 
@@ -97,7 +97,7 @@ test "sum" {
 ///|
 priv enum Formula {
   Num(Int)
-  Plus(Cell[Formula], Cell[Formula])
+  Plus(@adapton.Cell[Formula], @adapton.Cell[Formula])
 }
 
 ///|
@@ -111,13 +111,13 @@ impl Eq for Formula with op_equal(self, other) {
 
 ///|
 test "spreadsheet" {
-  let n1 = Cell::new(Num(1))
-  let n2 = Cell::new(Num(2))
-  let n3 = Cell::new(Num(3))
-  let p1 = Cell::new(Plus(n1, n2))
-  let p2 = Cell::new(Plus(p1, n3))
+  let n1 = @adapton.Cell::new(Num(1))
+  let n2 = @adapton.Cell::new(Num(2))
+  let n3 = @adapton.Cell::new(Num(3))
+  let p1 = @adapton.Cell::new(Plus(n1, n2))
+  let p2 = @adapton.Cell::new(Plus(p1, n3))
   let mut cnt = 0
-  let eval = memo_rec(fn(eval, c : Cell[Formula]) {
+  let eval = @adapton.memo_rec(fn(eval, c : @adapton.Cell[Formula]) {
     match c.get() {
       Num(x) => x
       Plus(c1, c2) => {

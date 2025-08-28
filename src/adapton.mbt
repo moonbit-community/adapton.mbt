@@ -1,4 +1,5 @@
-///| TODO
+///|
+/// TODO
 /// https://github.com/WebAssembly/gc/blob/main/proposals/gc/Post-MVP.md#weak-references
 /// wasm and wasm-gc can't support weak ref now.
 typealias Array as WeakArray
@@ -108,7 +109,8 @@ fn &Target::propagate(self : Node) -> Bool {
   }
 }
 
-///| TODO
+///|
+/// TODO
 /// Clean or Dirty is alive.
 ///  Destroyed was destroyed can't invoke get
 ///
@@ -128,7 +130,8 @@ fn &Target::set_all_flags_clean(self : Node) -> Unit {
   }
 }
 
-///| do not short-circuit.
+///|
+/// do not short-circuit.
 /// f isn't pure function. in other words, f has side effect.
 fn[A] any(xs : Array[A], f : (A) -> Bool) -> Bool {
   let mut res = false
@@ -194,12 +197,14 @@ pub fn[A] Cell::new(value : A) -> Cell[A] {
   { _id: next_id(), _value: value, _incoming_edges: [] }
 }
 
-///| The same as `Thunk::new`
+///|
+/// The same as `Thunk::new`
 pub fn[A] thunk(thunk : () -> A) -> Thunk[A] {
   Thunk::new(thunk)
 }
 
-///| The same as `Cell::new`
+///|
+/// The same as `Cell::new`
 pub fn[A] cell(value : A) -> Cell[A] {
   Cell::new(value)
 }
