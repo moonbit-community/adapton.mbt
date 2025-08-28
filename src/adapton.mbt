@@ -112,7 +112,7 @@ fn[A] any(xs : Array[A], f : (A) -> Bool) -> Bool {
 }
 
 ///|
-pub impl[A : Eq] Source for Thunk[A] with id(self) {
+pub impl[A] Source for Thunk[A] with id(self) {
   self._id
 }
 
@@ -301,6 +301,6 @@ pub impl[A] Source for Cell[A] with incoming_edges(self) {
 }
 
 ///|
-pub impl[A : Eq] Source for Thunk[A] with incoming_edges(self) {
+pub impl[A] Source for Thunk[A] with incoming_edges(self) {
   self._incoming_edges
 }
