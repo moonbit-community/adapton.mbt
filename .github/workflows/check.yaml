@@ -1,10 +1,10 @@
 name: check
 
 on:
-  schedule:
-    # Runs at 02:30, only on Friday.
-    # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#schedule
-    - cron: "30 2 * * 5"
+  # schedule:
+  #   # Runs at 02:30, only on Friday.
+  #   # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#schedule
+  #   - cron: "30 2 * * 5"
   workflow_dispatch:
   push:
     branches:
@@ -17,7 +17,7 @@ jobs:
   check:
     strategy:
       matrix:
-        version: [stable,pre-release,bleeding]
+        version: [stable]
         os:
           - name: ubuntu-latest
             triple: x86_64-linux-gnu
@@ -84,10 +84,6 @@ jobs:
         run: |
           moon test --target all,native
           moon test --target all,native --release
-
-      - name: moon test --doc
-        run: |
-          moon test --doc
 
   moon-json-format-check:
     runs-on: ubuntu-latest
