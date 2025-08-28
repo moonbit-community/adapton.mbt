@@ -28,16 +28,6 @@ struct Thunk[A] {
 }
 
 ///|
-fn[A] Thunk::debug_string(self : Thunk[A]) -> String {
-  "{ id : \{self._id}, out: \{self._outgoing_edges}, in: \{self._incoming_edges}}"
-}
-
-///|
-fn[A] Cell::debug_string(self : Cell[A]) -> String {
-  "{ id : \{self._id}, in: \{self._incoming_edges}}"
-}
-
-///|
 priv enum Flag {
   Clean
   Dirty
