@@ -101,7 +101,7 @@ priv enum Formula {
 }
 
 ///|
-impl Eq for Formula with op_equal(self, other) {
+impl Eq for Formula with equal(self, other) {
   match (self, other) {
     (Num(x1), Num(x2)) => x1 == x2
     (Plus(x1, y1), Plus(x2, y2)) => x1.get() == x2.get() && x1.get() == x2.get()
@@ -146,10 +146,10 @@ test "spreadsheet" {
 
 ///|
 test "conditional dependency" {
-  let s1 = Cell::new(true)
-  let s2 = Cell::new(-20)
-  let s3 = Cell::new(20)
-  let t = Thunk::new(() => if s1.get() { s2.get() } else { s3.get() })
+  let s1 = @adapton.Cell::new(true)
+  let s2 = @adapton.Cell::new(-20)
+  let s3 = @adapton.Cell::new(20)
+  let t = @adapton.Thunk::new(() => if s1.get() { s2.get() } else { s3.get() })
   inspect(t.get(), content="-20")
   s1.set(false)
   inspect(t.get(), content="20")

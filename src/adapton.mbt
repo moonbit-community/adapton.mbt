@@ -112,12 +112,12 @@ pub impl[A] Source for Cell[A] with id(self) {
 }
 
 ///|
-pub impl[A] Eq for Thunk[A] with op_equal(self, other) {
+pub impl[A] Eq for Thunk[A] with equal(self, other) {
   self.id == other.id
 }
 
 ///|
-pub impl[A] Eq for Cell[A] with op_equal(self, other) {
+pub impl[A] Eq for Cell[A] with equal(self, other) {
   self.id == other.id
 }
 
