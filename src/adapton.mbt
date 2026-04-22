@@ -2,13 +2,13 @@
 /// TODO
 /// https://github.com/WebAssembly/gc/blob/main/proposals/gc/Post-MVP.md#weak-references
 /// wasm and wasm-gc can't support weak ref now.
-typealias Array as WeakArray
+type WeakArray[A] = Array[A]
 
 ///|
-typealias WeakArray[Node] as IncomingEdges
+type IncomingEdges = WeakArray[Node]
 
 ///|
-typealias Array[Node] as OutgoingEdges
+type OutgoingEdges = Array[Node]
 
 ///|
 struct Cell[A] {
@@ -48,7 +48,7 @@ priv trait Target: Source {
 }
 
 ///|
-typealias &Target as Node
+type Node = &Target
 
 ///|
 /// invairent:
@@ -209,7 +209,7 @@ pub fn[A] Cell::get(self : Cell[A]) -> A {
 }
 
 ///|
-typealias Array[() -> Unit] as MemoTables
+type MemoTables = Array[() -> Unit]
 
 ///|
 let memo_tables : MemoTables = []
