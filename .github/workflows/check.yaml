@@ -56,7 +56,7 @@ jobs:
       - name: install module dependencies
         run: |
           moon update
-          moon install
+          moon check --deny-warn
 
       - name: moon check
         run: moon check 
