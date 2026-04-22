@@ -2,34 +2,34 @@
 package "illusory0x0/adapton"
 
 // Values
-fn[A] cell(A) -> Cell[A]
+pub fn[A] cell(A) -> Cell[A]
 
-fn clear_memo() -> Unit
+pub fn clear_memo() -> Unit
 
-fn[A : Hash + Eq, B] memo((A) -> B) -> (A) -> Thunk[B]
+pub fn[A : Hash + Eq, B] memo((A) -> B) -> (A) -> Thunk[B]
 
-fn[A : Hash + Eq, B] memo_rec(((A) -> Thunk[B], A) -> B) -> (A) -> Thunk[B]
+pub fn[A : Hash + Eq, B] memo_rec(((A) -> Thunk[B], A) -> B) -> (A) -> Thunk[B]
 
-fn[A] thunk(() -> A) -> Thunk[A]
+pub fn[A] thunk(() -> A) -> Thunk[A]
 
 // Errors
 
 // Types and methods
 type Cell[A]
-fn[A] Cell::get(Self[A]) -> A
-fn[A : Eq] Cell::modify(Self[A], (A) -> A) -> Unit
-fn[A] Cell::new(A) -> Self[A]
-fn[A : Eq] Cell::set(Self[A], A) -> Unit
-impl[A] Source for Cell[A]
-impl[A] Eq for Cell[A]
-impl[A] Hash for Cell[A]
+pub fn[A] Cell::get(Self[A]) -> A
+pub fn[A : Eq] Cell::modify(Self[A], (A) -> A) -> Unit
+pub fn[A] Cell::new(A) -> Self[A]
+pub fn[A : Eq] Cell::set(Self[A], A) -> Unit
+pub impl[A] Source for Cell[A]
+pub impl[A] Eq for Cell[A]
+pub impl[A] Hash for Cell[A]
 
 type Thunk[A]
-fn[A : Eq] Thunk::get(Self[A]) -> A
-fn[A] Thunk::new(() -> A) -> Self[A]
-impl[A] Source for Thunk[A]
-impl[A] Eq for Thunk[A]
-impl[A] Hash for Thunk[A]
+pub fn[A : Eq] Thunk::get(Self[A]) -> A
+pub fn[A] Thunk::new(() -> A) -> Self[A]
+pub impl[A] Source for Thunk[A]
+pub impl[A] Eq for Thunk[A]
+pub impl[A] Hash for Thunk[A]
 
 // Type aliases
 
