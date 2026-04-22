@@ -31,7 +31,7 @@ struct Thunk[A] {
 priv enum Flag {
   Clean
   Dirty
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 trait Source {
