@@ -132,7 +132,7 @@ pub impl[A] Hash for Cell[A] with hash_combine(self, hasher) {
 }
 
 ///|
-let node_counter : Ref[Int] = Ref::new(0)
+let node_counter : Ref[Int] = Ref(0)
 
 ///|
 fn next_id() -> Int {
