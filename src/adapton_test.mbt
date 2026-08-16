@@ -101,7 +101,7 @@ priv enum Formula {
 }
 
 ///|
-impl Eq for Formula with equal(self, other) {
+impl Eq for Formula with fn equal(self, other) {
   match (self, other) {
     (Num(x1), Num(x2)) => x1 == x2
     (Plus(x1, y1), Plus(x2, y2)) => x1.get() == x2.get() && x1.get() == x2.get()
