@@ -16,17 +16,29 @@ pub fn[A] thunk(() -> A) -> Thunk[A]
 
 // Types and methods
 type Cell[A]
+pub fn[A] Cell::equal(Self[A], Self[A]) -> Bool
 pub fn[A] Cell::get(Self[A]) -> A
+pub fn[A] Cell::hash(Self[A]) -> Int
+pub fn[A] Cell::hash_combine(Self[A], Hasher) -> Unit
+pub fn[A] Cell::id(Self[A]) -> Int
+pub fn[A] Cell::incoming_edges(Self[A]) -> Array[&Target]
 pub fn[A : Eq] Cell::modify(Self[A], (A) -> A) -> Unit
 pub fn[A] Cell::new(A) -> Self[A]
+pub fn[A] Cell::not_equal(Self[A], Self[A]) -> Bool
 pub fn[A : Eq] Cell::set(Self[A], A) -> Unit
 pub impl[A] Source for Cell[A]
 pub impl[A] Eq for Cell[A]
 pub impl[A] Hash for Cell[A]
 
 type Thunk[A]
+pub fn[A] Thunk::equal(Self[A], Self[A]) -> Bool
 pub fn[A : Eq] Thunk::get(Self[A]) -> A
+pub fn[A] Thunk::hash(Self[A]) -> Int
+pub fn[A] Thunk::hash_combine(Self[A], Hasher) -> Unit
+pub fn[A] Thunk::id(Self[A]) -> Int
+pub fn[A] Thunk::incoming_edges(Self[A]) -> Array[&Target]
 pub fn[A] Thunk::new(() -> A) -> Self[A]
+pub fn[A] Thunk::not_equal(Self[A], Self[A]) -> Bool
 pub impl[A] Source for Thunk[A]
 pub impl[A] Eq for Thunk[A]
 pub impl[A] Hash for Thunk[A]
@@ -35,4 +47,3 @@ pub impl[A] Hash for Thunk[A]
 
 // Traits
 trait Source
-

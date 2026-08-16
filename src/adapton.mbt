@@ -35,16 +35,16 @@ priv enum Flag {
 
 ///|
 trait Source {
-  id(Self) -> Int
-  incoming_edges(Self) -> IncomingEdges
+  fn id(Self) -> Int
+  fn incoming_edges(Self) -> IncomingEdges
 }
 
 ///|
 priv trait Target: Source {
-  outgoing_edges(Self) -> OutgoingEdges
-  update(Self) -> Bool
-  set_flag(Self, Flag) -> Unit
-  flag(Self) -> Flag
+  fn outgoing_edges(Self) -> OutgoingEdges
+  fn update(Self) -> Bool
+  fn set_flag(Self, Flag) -> Unit
+  fn flag(Self) -> Flag
 }
 
 ///|
@@ -58,7 +58,7 @@ fn &Target::dirty(self : Node) -> Unit {
   match self.flag() {
     Clean => {
       self.set_flag(Dirty)
-      for dependent in self.incoming_edges() {
+      for dependent in Source::incoming_edges(self) {
         &Target::dirty(dependent)
       }
     }
@@ -80,7 +80,7 @@ fn &Target::propagate(self : Node) -> Bool {
         [..] as xs =>
           if any(xs, &Target::propagate) {
             self.outgoing_edges().clear()
-            self.incoming_edges().clear()
+            Source::incoming_edges(self).clear()
             self.update()
           } else {
             false
@@ -102,33 +102,33 @@ fn[A] any(xs : Array[A], f : (A) -> Bool) -> Bool {
 }
 
 ///|
-pub impl[A] Source for Thunk[A] with id(self) {
+pub impl[A] Source for Thunk[A] with fn id(self) {
   self.id
 }
 
 ///|
-pub impl[A] Source for Cell[A] with id(self) {
+pub impl[A] Source for Cell[A] with fn id(self) {
   self.id
 }
 
 ///|
-pub impl[A] Eq for Thunk[A] with equal(self, other) {
+pub impl[A] Eq for Thunk[A] with fn equal(self, other) {
   self.id == other.id
 }
 
 ///|
-pub impl[A] Eq for Cell[A] with equal(self, other) {
+pub impl[A] Eq for Cell[A] with fn equal(self, other) {
   self.id == other.id
 }
 
 ///|
-pub impl[A] Hash for Thunk[A] with hash_combine(self, hasher) {
-  self.id.hash_combine(hasher)
+pub impl[A] Hash for Thunk[A] with fn hash_combine(self, hasher) {
+  Hash::hash_combine(self.id, hasher)
 }
 
 ///|
-pub impl[A] Hash for Cell[A] with hash_combine(self, hasher) {
-  self.id.hash_combine(hasher)
+pub impl[A] Hash for Cell[A] with fn hash_combine(self, hasher) {
+  Hash::hash_combine(self.id, hasher)
 }
 
 ///|
@@ -224,7 +224,7 @@ pub fn clear_memo() -> Unit {
 
 ///|
 pub fn[A : Hash + Eq, B] memo(f : (A) -> B) -> (A) -> Thunk[B] {
-  let h = {}
+  let h = Map([])
   memo_tables.push(fn() { h.clear() })
   fn(x) {
     match h.get(x) {
@@ -242,7 +242,7 @@ pub fn[A : Hash + Eq, B] memo(f : (A) -> B) -> (A) -> Thunk[B] {
 pub fn[A : Hash + Eq, B] memo_rec(
   f : ((A) -> Thunk[B], A) -> B,
 ) -> (A) -> Thunk[B] {
-  let h : Map[A, Thunk[B]] = {}
+  let h : Map[A, Thunk[B]] = Map([])
   memo_tables.push(fn() { h.clear() })
   fn g(x : A) -> Thunk[B] {
     match h.get(x) {
@@ -259,13 +259,13 @@ pub fn[A : Hash + Eq, B] memo_rec(
 }
 
 ///|
-impl[A : Eq] Target for Thunk[A] with outgoing_edges(self) {
+impl[A : Eq] Target for Thunk[A] with fn outgoing_edges(self) {
   self.outgoing_edges
 }
 
 ///|
 /// if actually update then return true else false
-impl[A : Eq] Target for Thunk[A] with update(self) {
+impl[A : Eq] Target for Thunk[A] with fn update(self) {
   target_stack.push(self)
   self.flag = Clean
   let old = self.value
@@ -276,21 +276,21 @@ impl[A : Eq] Target for Thunk[A] with update(self) {
 }
 
 ///|
-impl[A : Eq] Target for Thunk[A] with flag(self) {
+impl[A : Eq] Target for Thunk[A] with fn flag(self) {
   self.flag
 }
 
 ///|
-impl[A : Eq] Target for Thunk[A] with set_flag(self, flag) {
+impl[A : Eq] Target for Thunk[A] with fn set_flag(self, flag) {
   self.flag = flag
 }
 
 ///|
-pub impl[A] Source for Cell[A] with incoming_edges(self) {
+pub impl[A] Source for Cell[A] with fn incoming_edges(self) {
   self.incoming_edges
 }
 
 ///|
-pub impl[A] Source for Thunk[A] with incoming_edges(self) {
+pub impl[A] Source for Thunk[A] with fn incoming_edges(self) {
   self.incoming_edges
 }
